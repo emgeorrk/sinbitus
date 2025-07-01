@@ -1,0 +1,25 @@
+log:
+  level: debug
+  timestamp: yes
+  tsformat: "02-01-2006 15:04:05 MST"
+  prefix: "[SINBITUS]"
+  label: service
+  source: yes
+  formatter: text
+  source_format: short
+  color: yes
+  enable_fx_logs: yes
+
+http:
+  address: "0.0.0.0"
+  port: 9060
+
+postgres:
+  url: postgres://admin:CHANGE_ME@localhost:5432/sinbitus?sslmode=disable
+  max_pool_size: 1
+  conn_attempts: 10
+  conn_timeout: 1s
+
+jwt:
+  secret_key: CHANGE_ME
+  ttl: 24h
