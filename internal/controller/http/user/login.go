@@ -1,4 +1,4 @@
-package http
+package user
 
 import "github.com/gofiber/fiber/v3"
 
@@ -12,7 +12,7 @@ type LoginResponse struct {
 	Token    string `json:"token"`
 }
 
-func (s *Server) login(c fiber.Ctx) error {
+func (s *Controller) Login(c fiber.Ctx) error {
 	ctx := c.Context()
 
 	var req LoginRequest

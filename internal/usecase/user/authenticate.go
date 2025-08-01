@@ -17,7 +17,7 @@ func (u *UseCase) Authenticate(ctx context.Context, username, password string) (
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password)); err != nil {
 		u.log.Error("failed to compare password", u.log.Err(err))
-		return nil, fmt.Errorf("invalid password")
+		return nil, fmt.Errorf("invalid password") // TODO use bcrypt.ErrMismatchedHashAndPassword
 	}
 
 	return user.ToEntity(), nil

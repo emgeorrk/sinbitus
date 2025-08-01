@@ -6,38 +6,37 @@ import (
 
 	"github.com/emgeorrk/sinbitus/internal/config"
 	"github.com/emgeorrk/sinbitus/internal/constants"
+	"github.com/emgeorrk/sinbitus/internal/controller/http/habit"
+	"github.com/emgeorrk/sinbitus/internal/controller/http/metrics"
+	"github.com/emgeorrk/sinbitus/internal/controller/http/user"
 	"github.com/emgeorrk/sinbitus/internal/pkg/logger"
 	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/adaptor"
 	"github.com/gofiber/fiber/v3/middleware/cors"
 	"github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/gofiber/fiber/v3/middleware/requestid"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"go.uber.org/fx"
-)
-
-var Module = fx.Options(
-	fx.Provide(NewServer),
 )
 
 type Server struct {
+	address string
+	port    uint16
+
+	metricsCtrl *metrics.Controller
+	userCtrl    *user.Controller
+	habitCtrl   *habit.Controller
+
 	log *logger.Logger
 	app *fiber.App
 
-	auth AuthUseCase
 	time TimeProvider
-	user UserUseCase
-
-	address string
-	port    uint16
 }
 
 func NewServer(
+	metrics *metrics.Controller,
+	user *user.Controller,
+	habit *habit.Controller,
 	log *logger.Logger,
 	cfg *config.Config,
-	auth AuthUseCase,
 	clock TimeProvider,
-	user UserUseCase,
 ) *Server {
 	app := fiber.New(fiber.Config{
 		AppName:      constants.ProjectName,
@@ -47,13 +46,14 @@ func NewServer(
 	})
 
 	s := &Server{
-		log:     log,
-		app:     app,
-		auth:    auth,
-		time:    clock,
-		user:    user,
-		address: cfg.HTTP.Host,
-		port:    cfg.HTTP.Port,
+		log:         log,
+		app:         app,
+		time:        clock,
+		address:     cfg.HTTP.Host,
+		port:        cfg.HTTP.Port,
+		metricsCtrl: metrics,
+		userCtrl:    user,
+		habitCtrl:   habit,
 	}
 
 	s.setupMiddleware()
@@ -77,33 +77,6 @@ func (s *Server) setupMiddleware() {
 	}))
 }
 
-func (s *Server) setupRoutes() {
-	s.app.Get("/health", s.health)
-
-	s.app.Get("/metrics", adaptor.HTTPHandler(promhttp.Handler()))
-
-	v1 := s.app.Group("/api/v1")
-	{
-		v1.Post("/signup", s.signup)
-		v1.Post("/login", s.login)
-	}
-
-	// protectedV1 := s.app.Group("/api/v1").Use(s.loginMiddleware)
-	// {
-	// 	protectedV1.Get("/profile", s.profileHandler)
-	//
-	// 	protectedV1.Post("/habits", s.createHabit)
-	// 	protectedV1.Get("/habits", s.getHabits)
-	//
-	// 	protectedV1.Get("/habits/:id", s.getHabitHandler)
-	// 	protectedV1.Put("/habits/:id", s.updateHabitHandler)
-	// 	protectedV1.Delete("/habits/:id", s.deleteHabitHandler)
-	//
-	// 	protectedV1.Post("/habits/:id/track", s.trackHabitHandler)
-	// 	protectedV1.Get("/habits/:id/track", s.getHabitTrackHandler)
-	// }
-}
-
 func (s *Server) Start() error {
 	addr := fmt.Sprintf("%s:%d", s.address, s.port)
 
@@ -114,12 +87,4 @@ func (s *Server) Start() error {
 
 func (s *Server) Stop() error {
 	return s.app.Shutdown()
-}
-
-func (s *Server) health(c fiber.Ctx) error {
-	return c.JSON(fiber.Map{
-		"status":    "ok",
-		"timestamp": s.time.Now().UTC(),
-		"service":   constants.ProjectName,
-	})
 }

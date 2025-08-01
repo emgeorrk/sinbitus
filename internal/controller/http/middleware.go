@@ -1,9 +1,9 @@
 package http
 
 import (
-	"strings"
 	"time"
 
+	"github.com/emgeorrk/sinbitus/internal/entity"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/requestid"
 )
@@ -25,39 +25,15 @@ func (s *Server) loggerMiddleware(c fiber.Ctx) error {
 	return err
 }
 
-func (s *Server) loginMiddleware(c fiber.Ctx) error {
-	ctx := c.Context()
+func loginWrap(fn func(f fiber.Ctx, c entity.UserClaims) error) fiber.Handler {
+	return func(c fiber.Ctx) error {
+		userClaims, ok := c.Locals("user").(entity.UserClaims)
+		if !ok {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "failed to retrieve user claims",
+			})
+		}
 
-	authHeader := c.Get("Authorization")
-	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "missing or invalid Authorization header",
-		})
+		return fn(c, userClaims)
 	}
-
-	tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
-
-	token, err := s.auth.ParseToken(ctx, tokenStr)
-	if err != nil || !token.Valid {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "invalid token",
-		})
-	}
-
-	claims, err := s.auth.ExtractClaims(ctx, token)
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "failed to extract claims",
-		})
-	}
-
-	if s.auth.IsExpired(ctx, token) {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "token expired",
-		})
-	}
-
-	c.Locals("user", claims)
-
-	return c.Next()
 }

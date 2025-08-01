@@ -11,10 +11,10 @@ var Module = fx.Options(
 
 type UseCase struct {
 	log  *logger.Logger
-	repo RepoProvider
+	repo Repository
 }
 
-func NewUseCase(log *logger.Logger, repo RepoProvider) *UseCase {
+func NewUseCase(log *logger.Logger, repo Repository) *UseCase {
 	return &UseCase{
 		log:  log,
 		repo: repo,

@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/emgeorrk/sinbitus/internal/appfx"
 	"github.com/emgeorrk/sinbitus/internal/config"
@@ -44,7 +45,10 @@ func main() {
 
 	<-stop
 
-	err := app.Stop(context.Background())
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err := app.Stop(ctx)
 	if err != nil {
 		fmt.Println("Error stopping app:", err)
 	}
