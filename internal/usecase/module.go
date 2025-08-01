@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"github.com/emgeorrk/sinbitus/internal/usecase/auth"
+	"github.com/emgeorrk/sinbitus/internal/usecase/habit"
 	"github.com/emgeorrk/sinbitus/internal/usecase/repo"
 	"github.com/emgeorrk/sinbitus/internal/usecase/user"
 	"go.uber.org/fx"
@@ -9,6 +10,7 @@ import (
 
 var Module = fx.Options(
 	auth.Module,
+	habit.Module,
 	repo.Module,
 	user.Module,
 )

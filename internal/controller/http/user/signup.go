@@ -1,4 +1,4 @@
-package http
+package user
 
 import (
 	"github.com/gofiber/fiber/v3"
@@ -14,7 +14,7 @@ type SignupResponse struct {
 	Token    string `json:"token"`
 }
 
-func (s *Server) signup(c fiber.Ctx) error {
+func (s *Controller) SignUp(c fiber.Ctx) error {
 	ctx := c.Context()
 
 	var req SignupRequest

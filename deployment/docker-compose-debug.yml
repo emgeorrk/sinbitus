@@ -14,7 +14,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "admin"]
+      test: [ "CMD", "pg_isready", "-U", "admin", "-d", "sinbitus" ]
       interval: 5s
       timeout: 3s
       retries: 5

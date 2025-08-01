@@ -15,3 +15,12 @@ func (u *UseCase) GetUserByID(ctx context.Context, id uint64) (*entity.User, err
 
 	return user.ToEntity(), nil
 }
+
+func (u *UseCase) GetUserByUsername(ctx context.Context, username string) (*entity.User, error) {
+	user, err := u.repo.GetUserByUsername(ctx, username)
+	if err != nil {
+		return nil, fmt.Errorf("GetUserByUsername: %w", err)
+	}
+
+	return user.ToEntity(), nil
+}

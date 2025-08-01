@@ -8,7 +8,7 @@ log:
   formatter: text
   source_format: short
   color: yes
-  enable_fx_logs: yes
+  enable_fx_logs: no
 
 http:
   address: "0.0.0.0"

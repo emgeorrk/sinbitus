@@ -5,11 +5,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/emgeorrk/sinbitus/internal/dto"
+	"github.com/emgeorrk/sinbitus/internal/model"
 	"github.com/jackc/pgx/v4"
 )
 
-func (r *Repo) GetUserByID(ctx context.Context, id uint64) (*dto.User, error) {
+func (r *Repo) GetUserByID(ctx context.Context, id uint64) (*model.User, error) {
 	sql, args, err := r.Builder.
 		Select("id", "username", "password_hash", "created_at").
 		From("users").
@@ -20,7 +20,7 @@ func (r *Repo) GetUserByID(ctx context.Context, id uint64) (*dto.User, error) {
 		return nil, fmt.Errorf("get user by id %d: build sql: %w", id, err)
 	}
 
-	var user dto.User
+	var user model.User
 	err = r.Pool.QueryRow(ctx, sql, args...).Scan(
 		&user.ID,
 		&user.Username,
@@ -38,7 +38,7 @@ func (r *Repo) GetUserByID(ctx context.Context, id uint64) (*dto.User, error) {
 	return &user, nil
 }
 
-func (r *Repo) GetUserByUsername(ctx context.Context, username string) (*dto.User, error) {
+func (r *Repo) GetUserByUsername(ctx context.Context, username string) (*model.User, error) {
 	sql, args, err := r.Builder.
 		Select("id", "username", "password_hash", "created_at").
 		From("users").
@@ -49,7 +49,7 @@ func (r *Repo) GetUserByUsername(ctx context.Context, username string) (*dto.Use
 		return nil, fmt.Errorf("get user by username %s: build sql: %w", username, err)
 	}
 
-	var user dto.User
+	var user model.User
 	err = r.Pool.QueryRow(ctx, sql, args...).Scan(
 		&user.ID,
 		&user.Username,
@@ -67,7 +67,7 @@ func (r *Repo) GetUserByUsername(ctx context.Context, username string) (*dto.Use
 	return &user, nil
 }
 
-func (r *Repo) CreateUser(ctx context.Context, username string, passwordHash string) (*dto.User, error) {
+func (r *Repo) CreateUser(ctx context.Context, username string, passwordHash string) (*model.User, error) {
 	sql, args, err := r.Builder.
 		Insert("users").
 		Columns("username", "password_hash", "created_at").
@@ -79,7 +79,7 @@ func (r *Repo) CreateUser(ctx context.Context, username string, passwordHash str
 		return nil, fmt.Errorf("create user: build sql: %w", err)
 	}
 
-	var user dto.User
+	var user model.User
 	err = r.Pool.QueryRow(ctx, sql, args...).Scan(
 		&user.ID,
 		&user.Username,

@@ -2,12 +2,19 @@ package user
 
 import (
 	"context"
+	"time"
 
-	"github.com/emgeorrk/sinbitus/internal/dto"
+	"github.com/emgeorrk/sinbitus/internal/model"
 )
 
-type RepoProvider interface {
-	GetUserByID(ctx context.Context, id uint64) (*dto.User, error)
-	GetUserByUsername(ctx context.Context, username string) (*dto.User, error)
-	CreateUser(ctx context.Context, username, passwordHash string) (*dto.User, error)
-}
+type (
+	Repository interface {
+		GetUserByID(ctx context.Context, id uint64) (*model.User, error)
+		GetUserByUsername(ctx context.Context, username string) (*model.User, error)
+		CreateUser(ctx context.Context, username, passwordHash string) (*model.User, error)
+	}
+
+	TimeProvider interface {
+		Now() time.Time
+	}
+)

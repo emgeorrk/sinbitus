@@ -7,4 +7,5 @@ var Module = fx.Options(
 	Repo,
 	UserUseCase,
 	AuthUseCase,
+	HabitUseCase,
 )
