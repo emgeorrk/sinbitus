@@ -9,22 +9,23 @@ type Controller struct {
 	log       *logger.Logger
 	validator *validator.Validate
 
-	auth  AuthUseCase
-	time  TimeProvider
-	habit HabitUseCase
+	auth   AuthUseCase
+	time   TimeProvider
+	habits HabitsUseCase
 }
 
 func NewController(
 	log *logger.Logger,
+	validator *validator.Validate,
 	auth AuthUseCase,
 	clock TimeProvider,
-	habit HabitUseCase,
+	habit HabitsUseCase,
 ) *Controller {
 	return &Controller{
 		log:       log,
-		validator: validator.New(),
+		validator: validator,
 		auth:      auth,
 		time:      clock,
-		habit:     habit,
+		habits:    habit,
 	}
 }

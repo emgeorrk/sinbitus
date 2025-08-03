@@ -1,4 +1,4 @@
-package user
+package event
 
 import (
 	"github.com/emgeorrk/sinbitus/internal/pkg/logger"
@@ -9,9 +9,9 @@ type Controller struct {
 	log       *logger.Logger
 	validator *validator.Validate
 
-	auth  AuthUseCase
-	time  TimeProvider
-	users UsersUseCase
+	auth   AuthUseCase
+	time   TimeProvider
+	events EventsUseCase
 }
 
 func NewController(
@@ -19,13 +19,13 @@ func NewController(
 	validator *validator.Validate,
 	auth AuthUseCase,
 	clock TimeProvider,
-	user UsersUseCase,
+	events EventsUseCase,
 ) *Controller {
 	return &Controller{
 		log:       log,
 		validator: validator,
 		auth:      auth,
 		time:      clock,
-		users:     user,
+		events:    events,
 	}
 }

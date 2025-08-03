@@ -6,6 +6,7 @@ import (
 
 	"github.com/emgeorrk/sinbitus/internal/config"
 	"github.com/emgeorrk/sinbitus/internal/constants"
+	"github.com/emgeorrk/sinbitus/internal/controller/http/event"
 	"github.com/emgeorrk/sinbitus/internal/controller/http/habit"
 	"github.com/emgeorrk/sinbitus/internal/controller/http/metrics"
 	"github.com/emgeorrk/sinbitus/internal/controller/http/user"
@@ -20,9 +21,10 @@ type Server struct {
 	address string
 	port    uint16
 
-	metricsCtrl *metrics.Controller
 	userCtrl    *user.Controller
 	habitCtrl   *habit.Controller
+	eventCtrl   *event.Controller
+	metricsCtrl *metrics.Controller
 
 	log *logger.Logger
 	app *fiber.App
@@ -34,6 +36,7 @@ func NewServer(
 	metrics *metrics.Controller,
 	user *user.Controller,
 	habit *habit.Controller,
+	event *event.Controller,
 	log *logger.Logger,
 	cfg *config.Config,
 	clock TimeProvider,
@@ -54,6 +57,7 @@ func NewServer(
 		metricsCtrl: metrics,
 		userCtrl:    user,
 		habitCtrl:   habit,
+		eventCtrl:   event,
 	}
 
 	s.setupMiddleware()
@@ -64,17 +68,16 @@ func NewServer(
 }
 
 func (s *Server) setupMiddleware() {
-	s.app.Use(recover.New())
-
-	s.app.Use(requestid.New())
-
-	s.app.Use(s.loggerMiddleware)
-
-	s.app.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders: []string{"Origin", "Content-Type", "Accept", "Authorization"},
-	}))
+	s.app.Use(
+		recover.New(),
+		requestid.New(),
+		s.loggerMiddleware,
+		cors.New(cors.Config{
+			AllowOrigins: []string{"*"},
+			AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			AllowHeaders: []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		}),
+	)
 }
 
 func (s *Server) Start() error {

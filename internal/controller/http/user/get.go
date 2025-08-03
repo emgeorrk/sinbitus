@@ -12,7 +12,7 @@ type GetProfileResponse struct {
 func (s *Controller) GetProfile(c fiber.Ctx, claims entity.UserClaims) error {
 	ctx := c.Context()
 
-	user, err := s.user.GetUserByID(ctx, claims.UserID)
+	user, err := s.users.GetUserByID(ctx, claims.UserID)
 	if err != nil || user == nil {
 		s.log.Error("GetUserByID err", s.log.Err(err), "user", user)
 		return c.JSON(fiber.Map{

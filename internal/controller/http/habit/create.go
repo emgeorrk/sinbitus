@@ -41,7 +41,7 @@ func (s *Controller) CreateHabit(c fiber.Ctx, claims entity.UserClaims) error {
 		Description: req.Description,
 	}
 
-	res, err := s.habit.CreateHabit(ctx, claims.UserID, habit)
+	res, err := s.habits.CreateHabit(ctx, claims.UserID, habit)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to create habit",

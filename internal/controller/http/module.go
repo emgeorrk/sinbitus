@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/emgeorrk/sinbitus/internal/controller/http/event"
 	"github.com/emgeorrk/sinbitus/internal/controller/http/habit"
 	"github.com/emgeorrk/sinbitus/internal/controller/http/metrics"
 	"github.com/emgeorrk/sinbitus/internal/controller/http/user"
@@ -12,4 +13,5 @@ var Module = fx.Options(
 	fx.Provide(metrics.NewController),
 	fx.Provide(user.NewController),
 	fx.Provide(habit.NewController),
+	fx.Provide(event.NewController),
 )

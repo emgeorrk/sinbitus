@@ -31,7 +31,7 @@ func (s *Controller) GetHabits(c fiber.Ctx, claims entity.UserClaims) error {
 		})
 	}
 
-	habits, err := s.habit.GetHabitsByUserID(ctx, claims.UserID)
+	habits, err := s.habits.GetHabitsByUserID(ctx, claims.UserID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to get habits",

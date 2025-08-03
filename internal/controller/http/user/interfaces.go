@@ -15,7 +15,7 @@ type (
 		ExtractClaims(ctx context.Context, token jwt.Token) (*entity.UserClaims, error)
 	}
 
-	UserUseCase interface {
+	UsersUseCase interface {
 		GetUserByID(ctx context.Context, id uint64) (*entity.User, error)
 		CreateUser(ctx context.Context, username, password string) (*entity.User, error)
 		Authenticate(ctx context.Context, username, password string) (*entity.User, error)

@@ -18,7 +18,7 @@ type UpdateHabitResponse CreateHabitResponse
 func (s *Controller) UpdateHabit(c fiber.Ctx, claims entity.UserClaims) error {
 	ctx := c.Context()
 
-	idStr := c.Params("id")
+	idStr := c.Params("habit_id")
 	if idStr == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Habit ID is required",
@@ -51,7 +51,7 @@ func (s *Controller) UpdateHabit(c fiber.Ctx, claims entity.UserClaims) error {
 		Description: utils.SafeDeref(req.Description),
 	}
 
-	res, err := s.habit.UpdateHabit(ctx, claims.UserID, habit)
+	res, err := s.habits.UpdateHabit(ctx, claims.UserID, habit)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to update habit",

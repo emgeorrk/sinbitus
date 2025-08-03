@@ -1,4 +1,4 @@
-package habit
+package event
 
 import (
 	"context"
@@ -11,8 +11,8 @@ import (
 type (
 	AuthUseCase interface {
 		GenerateToken(ctx context.Context, userID uint64, username string) (string, error)
-		ExtractClaims(ctx context.Context, token jwt.Token) (*entity.UserClaims, error)
 		ParseToken(ctx context.Context, tokenStr string) (*jwt.Token, error)
+		ExtractClaims(ctx context.Context, token jwt.Token) (*entity.UserClaims, error)
 	}
 
 	UserUseCase interface {
@@ -21,11 +21,11 @@ type (
 		Authenticate(ctx context.Context, username, password string) (*entity.User, error)
 	}
 
-	HabitsUseCase interface {
-		CreateHabit(ctx context.Context, userID uint64, habit entity.Habit) (*entity.Habit, error)
-		UpdateHabit(ctx context.Context, userID uint64, habit entity.Habit) (*entity.Habit, error)
-		GetHabitsByUserID(ctx context.Context, userID uint64) ([]entity.Habit, error)
-		DeleteHabit(ctx context.Context, userID, habitID uint64) error
+	EventsUseCase interface {
+		CreateEvent(ctx context.Context, userID uint64, event entity.Event) (*entity.Event, error)
+		GetEventsByHabitID(ctx context.Context, userID, habitID uint64) ([]entity.Event, error)
+		UpdateEvent(ctx context.Context, userID uint64, event entity.Event) (*entity.Event, error)
+		DeleteEvent(ctx context.Context, userID, eventID uint64) error
 	}
 
 	TimeProvider interface {

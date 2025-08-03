@@ -22,7 +22,7 @@ func (s *Controller) Login(c fiber.Ctx) error {
 		})
 	}
 
-	user, err := s.user.Authenticate(ctx, req.Username, req.Password)
+	user, err := s.users.Authenticate(ctx, req.Username, req.Password)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "invalid username or password",

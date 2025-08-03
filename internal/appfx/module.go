@@ -8,4 +8,5 @@ var Module = fx.Options(
 	UserUseCase,
 	AuthUseCase,
 	HabitUseCase,
+	EventUseCase,
 )

@@ -1,4 +1,4 @@
-package habit
+package event
 
 import (
 	"strconv"
@@ -7,27 +7,26 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func (s *Controller) DeleteHabit(c fiber.Ctx, claims entity.UserClaims) error {
+func (s *Controller) DeleteEvent(c fiber.Ctx, claims entity.UserClaims) error {
 	ctx := c.Context()
 
-	idStr := c.Params("id")
-	if idStr == "" {
+	eventIDStr := c.Params("event_id")
+	if eventIDStr == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Habit ID is required",
 		})
 	}
 
-	id, err := strconv.ParseUint(idStr, 10, 64)
+	habitID, err := strconv.ParseUint(eventIDStr, 10, 64)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid habit ID format",
 		})
 	}
 
-	err = s.habit.DeleteHabit(ctx, claims.UserID, id)
-	if err != nil {
+	if err := s.events.DeleteEvent(ctx, claims.UserID, habitID); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to delete habit",
+			"error": "Failed to delete event",
 		})
 	}
 

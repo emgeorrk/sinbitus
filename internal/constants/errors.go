@@ -12,4 +12,5 @@ func WrapAsErrDB(err error) error {
 
 var (
 	ErrHabitNotFound = errors.New("habit not found")
+	ErrEventNotFound = errors.New("event not found")
 )
